@@ -12,6 +12,7 @@
 
     <button onClick="testJSOnly()">JS Only</button>
     <button onClick="testWithWASM()">WASM</button>
+    <button onClick="testWithSIMD()">SIMD</button>
 </body>
 
 <script type="module" src="./rust/pkg/rust.js"></script>
@@ -54,6 +55,19 @@
         const end = performance.now();
 
         alert(`WASM: ${end - start} ms`);
+    }
+
+    function testWithSIMD() {
+        const length = 100000000; // 100 MB
+
+        const lhs = generateByteSequence(length);
+        const rhs = generateByteSequence(length);
+
+        const start = performance.now();
+        const result = wasm.add_with_simd(lhs, rhs);
+        const end = performance.now();
+
+        alert(`SIMD: ${end - start} ms`);
     }
 
     function generateByteSequence(length) {
