@@ -11,9 +11,17 @@
     <h1>Simd Test</h1>
 
     <button onClick="testJSOnly()">JS Only</button>
+    <button onClick="testWithWASM()">WASM</button>
 </body>
 
+<script type="module" src="./rust/pkg/rust.js"></script>
 <script>
+    let wasm;
+
+    import('./rust/pkg/rust.js').then(module => {
+        wasm = module;
+    });
+
     function addByteSequences(lhs, rhs) {
         const length = lhs.length;
         const result = new Array(length);
@@ -33,6 +41,19 @@
         const end = performance.now();
 
         alert(`JS Only: ${end - start} ms`);
+    }
+
+    function testWithWASM() {
+        const length = 100000000; // 100 MB
+
+        const lhs = generateByteSequence(length);
+        const rhs = generateByteSequence(length);
+
+        const start = performance.now();
+        const result = wasm.add(lhs, rhs);
+        const end = performance.now();
+
+        alert(`WASM: ${end - start} ms`);
     }
 
     function generateByteSequence(length) {
